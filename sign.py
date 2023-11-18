@@ -1,8 +1,9 @@
 import time
 import json
 
-from settings import log, CONFIG, req
+from settings import log, req, MESSAGE_TEMPLATE
 
+CONFIG = {}
 
 class Base(object):
     def __init__(self, cookies: str = None):
@@ -13,8 +14,8 @@ class Base(object):
 
     def get_header(self):
         header = {
-            'User-Agent': CONFIG.WB_USER_AGENT,
-            'Referer': CONFIG.OS_REFERER_URL,
+            'User-Agent': CONFIG['WB_USER_AGENT'],
+            'Referer': CONFIG['OS_REFERER_URL'],
             'Accept-Encoding': 'gzip, deflate, br',
             'Cookie': self._cookie
         }
@@ -26,7 +27,7 @@ class Roles(Base):
         response = {}
         try:
             response = req.to_python(req.request(
-                'get', CONFIG.OS_REWARD_URL, headers=self.get_header()).text)
+                'get', CONFIG['OS_REWARD_URL'], headers=self.get_header()).text)
         except json.JSONDecodeError as e:
             raise Exception(e)
 
@@ -36,7 +37,7 @@ class Roles(Base):
         response = {}
         try:
             response = req.to_python(req.request(
-                'get', CONFIG.OS_ROLE_URL, headers=self.get_header()).text)
+                'get', CONFIG['OS_ROLE_URL'], headers=self.get_header()).text)
             message = response['message']
         except Exception as e:
             raise Exception(e)
@@ -48,7 +49,9 @@ class Roles(Base):
 
 
 class Sign(Base):
-    def __init__(self, cookies: str = None):
+    def __init__(self, cookies: str = None, CONFIG_G = {}):
+        global CONFIG
+        CONFIG = CONFIG_G
         super(Sign, self).__init__(cookies)
         self._region_name = ''
         self._uid = ''
@@ -94,7 +97,7 @@ class Sign(Base):
         #aid = str(aid).replace(str(aid)[1:len(aid)-1], ' ▓ ▓ ▓ ▓ ▓ ▓ ', 1)
         log.info(f'Checking in account id {aid}...')
         
-        info_url = CONFIG.OS_INFO_URL
+        info_url = CONFIG['OS_INFO_URL']
         try:
             response = req.request(
                 'get', info_url, headers=self.get_header()).text
@@ -139,12 +142,12 @@ class Sign(Base):
                 return ''.join(message_list)
 
             data = {
-                'act_id': CONFIG.OS_ACT_ID
+                'act_id': CONFIG['OS_ACT_ID']
             }
 
             try:
                 response = req.to_python(req.request(
-                    'post', CONFIG.OS_SIGN_URL, headers=self.get_header(),
+                    'post', CONFIG['OS_SIGN_URL'], headers=self.get_header(),
                     data=json.dumps(data, ensure_ascii=False)).text)
             except Exception as e:
                 raise
@@ -163,4 +166,4 @@ class Sign(Base):
 
     @property
     def message(self):
-        return CONFIG.MESSAGE_TEMPLATE
+        return MESSAGE_TEMPLATE

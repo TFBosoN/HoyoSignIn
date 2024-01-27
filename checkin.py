@@ -21,7 +21,7 @@ def run_check_in(game_name, CONFIG):
     if os.getenv('OS_COOKIE', '') != '':
         OS_COOKIE = os.getenv('OS_COOKIE')
     else:
-        log.error(f"{game_name} Cookie not set properly, please read the documentation on how to set and format your cookie in Github Secrets.")
+        log.error(f"{game_name} Cookie not set properly")
         raise Exception("Cookie failure")
 
     cookie_list = OS_COOKIE.split('@')

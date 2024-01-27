@@ -27,7 +27,7 @@ class Notify(object):
             log.info('No social media notifications configured to be sent.')
 
     def send_telegram_notification(self, api, chat, app, status, msg):
-        log.info('Sending Telegram...')
+        log.info('Sending Telegram message...')
         params = {
             'chat_id': chat,
             'text': f"{app}\n{status}\n{msg}"

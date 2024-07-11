@@ -51,7 +51,7 @@ config = {
         "OS_INFO_URL": 'https://sg-public-api.hoyolab.com/event/luna/os/info?lang={}&act_id={}'.format('en-us', 'e202308141137581'),
         "OS_SIGN_URL": 'https://sg-public-api.hoyolab.com/event/luna/os/sign?lang={}'.format('en-us'),
         "WB_USER_AGENT": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0'
-    }
+    },
     "HSR": {
         "LOG_LEVEL": logging.INFO,
         "LANG": 'en-us',

@@ -1,1 +1,3 @@
-requests==2.32.2
+python-dotenv==1.0.1
+Requests==2.32.3
+SocksiPy_branch==1.01

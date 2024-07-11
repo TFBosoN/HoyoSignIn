@@ -4,6 +4,7 @@ Daily sign in tool for Mihoyo games.
 ## Contents
 
 - [About](#about)
+- [Features](#features)
 - [Getting Started](#getting-started)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
@@ -17,8 +18,13 @@ Daily sign in tool for Mihoyo games.
 This is a remake of original [Genshin Impact Check-In Helper](https://am-steph.github.io/wayscript-login-helper/) modified to complete daily logins for Hoyo games with notification for Telegram.
 Can be setup for Windows or Linux.
 
-## Prerequisites
+## Features
+- Supports all Hoyo games
+- Supports multiple accounts and per game configuration
+- Add your own proxy (makes less of a chance to get captcha, probably)
+- Optional notifications via Telegram with beautiful status messages
 
+## Prerequisites
 - Git
 - Python 3.10 (with added `PATH` variable for Windows)
 

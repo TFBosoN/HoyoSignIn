@@ -48,7 +48,11 @@ pip install -r requirements.txt
 > [!IMPORTANT]
 > You need to specify which of the games to do checkin in by providing it in corresponding field.
 > 
-> For example, fill `OS_COOKIE_HSR` if you want to do only HSR daily checkings.
+> Examples:
+>
+> Fill `OS_COOKIE_HSR` if you want to do only Honkai:StarRail daily checkings. Leave others blank.
+>
+> Fill `OS_COOKIE_Genshin` and `OS_COOKIE_ZZZ` with the same value if you want to complete Genshin and Zenless Zone Zero checkins. Leave others blank.
 3. Change the settings in `settings.py`
 	- if you wish to add more games in the future with the same daily loging mechanic you can add another game and it's endpoints.
 	

@@ -34,7 +34,7 @@ pip install -r requirements.txt
 
 1. Rename `.env.example` to `.env`
 2. Fill environment variables:
-	- Hoyolab cookie: Complete guide on how to get `OS_COOKIE` is described at https://am-steph.github.io/wayscript-login-helper/ ___Important note for this project!___ You need to specify which of the games you want it to do checking in by providing it in corresponding field. For example, fill `OS_COOKIE_HSR` if you want to do only HSR daily checkings.
+	- Hoyolab cookie: Complete guide on how to get `OS_COOKIE` is described at https://am-steph.github.io/wayscript-login-helper/ ___Important note for this project!___ You need to specify which of the games you want it to do checkin in by providing it in corresponding field. For example, fill `OS_COOKIE_HSR` if you want to do only HSR daily checkings.
 	- Telegram (optional): Fill variables `BOT_API` and `BOT_CHAT` with bot token and chat id accordingly
 	- User Agent (optional): If you want to update User Agent to the one you're using replace `USER_AGENT` variable with [this](https://www.google.ru/search?ie=UTF-8&q=what%27s%20my%20user%20agent)
 3. Change the settings in `settings.py`

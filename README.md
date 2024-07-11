@@ -42,7 +42,7 @@ pip install -r requirements.txt
 
 1. Rename `.env.example` to `.env`
 2. Fill environment variables:
-	- Hoyolab cookie: Complete guide on how to get `OS_COOKIE` is described at https://am-steph.github.io/wayscript-login-helper/ 
+	- Hoyolab cookie: Complete guide on how to get `OS_COOKIE` is described at https://am-steph.github.io/wayscript-login-helper/. That Cookie value is universal for all Hoyo games.
 	- Telegram (optional): Fill variables `BOT_API` and `BOT_CHAT` with bot token and chat id accordingly
 	- User Agent (optional): If you want to update User Agent to the one you're using replace `USER_AGENT` variable with [this](https://www.google.ru/search?ie=UTF-8&q=what%27s%20my%20user%20agent)
 > [!IMPORTANT]

@@ -5,7 +5,6 @@ Daily sign in tool for Mihoyo games.
 
 - [About](#about)
 - [Features](#features)
-- [Getting Started](#getting-started)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Usage](#usage)

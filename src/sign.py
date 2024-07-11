@@ -62,6 +62,8 @@ class Sign(Base):
 
     def get_info(self):
         index = 0
+        
+        
         user_game_roles = Roles(self._cookie).get_roles()
         role_list = user_game_roles.get('data', {}).get('list', [])
 

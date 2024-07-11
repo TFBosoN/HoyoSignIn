@@ -19,29 +19,60 @@ logging.basicConfig(
 log = logger = logging
 
 config = {
+    "HI3":{
+        "LOG_LEVEL": logging.INFO,
+        "LANG": 'en-us',
+        "OS_ACT_ID": 'e202110291205111',
+        "OS_REFERER_URL": 'https://act.hoyolab.com/bbs/event/signin-bh3/index.html?act_id={}'.format('e202110291205111'),
+        "OS_REWARD_URL": 'https://sg-public-api.hoyolab.com/event/mani/home?lang={}&act_id={}'.format('en-us', 'e202110291205111'),
+        "OS_ROLE_URL": 'https://api-os-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie?game_biz={}'.format('bh3_global'),
+        "OS_INFO_URL": 'https://sg-public-api.hoyolab.com/event/mani/info?lang={}&act_id={}'.format('en-us', 'e202110291205111'),
+        "OS_SIGN_URL": 'https://sg-public-api.hoyolab.com/event/mani/sign?lang={}'.format('en-us'),
+        "WB_USER_AGENT": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0'
+    },
     "Genshin": {
-        "GIH_VERSION": '1.7.0.210523-alpha',
         "LOG_LEVEL": logging.INFO,
         "LANG": 'en-us',
         "OS_ACT_ID": 'e202102251931481',
-        "OS_REFERER_URL": 'https://act.hoyolab.com/ys/event/signin-sea-v3/index.html?act_id={}'.format('e202102251931481'),
+        "OS_REFERER_URL": 'https://act.hoyolab.com/ys/event/signin-sea-v3/e202102251931481.html?act_id={}'.format('e202102251931481'),
         "OS_REWARD_URL": 'https://sg-hk4e-api.hoyolab.com/event/sol/home?lang={}&act_id={}'.format('en-us', 'e202102251931481'),
         "OS_ROLE_URL": 'https://api-os-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie?game_biz={}'.format('hk4e_global'),
         "OS_INFO_URL": 'https://sg-hk4e-api.hoyolab.com/event/sol/info?lang={}&act_id={}'.format('en-us', 'e202102251931481'),
         "OS_SIGN_URL": 'https://sg-hk4e-api.hoyolab.com/event/sol/sign?lang={}'.format('en-us'),
-        "WB_USER_AGENT": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/114.0'
+        "WB_USER_AGENT": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0'
     },
-    "Honkai": {
-        "GIH_VERSION": '1.7.0.210523-alpha',
+    "ToT": {
+        "LOG_LEVEL": logging.INFO,
+        "LANG": 'en-us',
+        "OS_ACT_ID": 'e202308141137581',
+        "OS_REFERER_URL": 'https://act.hoyolab.com/bbs/event/signin/nxx/index.html?act_id={}'.format('e202308141137581'),
+        "OS_REWARD_URL": 'https://sg-public-api.hoyolab.com/event/luna/os/home?lang={}&act_id={}'.format('en-us', 'e202308141137581'),
+        "OS_ROLE_URL": 'https://api-os-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie?game_biz={}'.format('nxx_global'),
+        "OS_INFO_URL": 'https://sg-public-api.hoyolab.com/event/luna/os/info?lang={}&act_id={}'.format('en-us', 'e202308141137581'),
+        "OS_SIGN_URL": 'https://sg-public-api.hoyolab.com/event/luna/os/sign?lang={}'.format('en-us'),
+        "WB_USER_AGENT": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0'
+    }
+    "HSR": {
         "LOG_LEVEL": logging.INFO,
         "LANG": 'en-us',
         "OS_ACT_ID": 'e202303301540311',
-        "OS_REFERER_URL": 'https://act.hoyolab.com/bbs/event/signin/hkrpg/index.html?act_id={}'.format('e202303301540311'),
+        "OS_REFERER_URL": 'https://act.hoyolab.com/bbs/event/signin/hkrpg/e202303301540311.html?act_id={}'.format('e202303301540311'),
         "OS_REWARD_URL": 'https://sg-public-api.hoyolab.com/event/luna/os/home?lang={}&act_id={}'.format('en-us', 'e202303301540311'),
         "OS_ROLE_URL": 'https://api-os-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie?game_biz={}'.format('hkrpg_global'),
         "OS_INFO_URL": 'https://sg-public-api.hoyolab.com/event/luna/os/info?lang={}&act_id={}'.format('en-us', 'e202303301540311'),
         "OS_SIGN_URL": 'https://sg-public-api.hoyolab.com/event/luna/os/sign?lang={}'.format('en-us'),
-        "WB_USER_AGENT": 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E150'
+        "WB_USER_AGENT": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0'
+    },
+    "ZZZ": {
+        "LOG_LEVEL": logging.INFO,
+        "LANG": 'en-us',
+        "OS_ACT_ID": 'e202406031448091',
+        "OS_REFERER_URL": 'https://act.hoyolab.com/bbs/event/signin/zzz/e202406031448091.html?act_id={}'.format('e202406031448091'),
+        "OS_REWARD_URL": 'https://sg-act-nap-api.hoyolab.com/event/luna/zzz/os/home?lang={}&act_id={}'.format('en-us', 'e202406031448091'),
+        "OS_ROLE_URL": 'https://api-os-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie?game_biz={}'.format('nap_global'),
+        "OS_INFO_URL": 'https://sg-act-nap-api.hoyolab.com/event/luna/zzz/os/info?lang={}&act_id={}'.format('en-us', 'e202406031448091'),
+        "OS_SIGN_URL": 'https://sg-act-nap-api.hoyolab.com/event/luna/zzz/os/sign?lang={}'.format('en-us'),
+        "WB_USER_AGENT": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0'
     }
 }
 

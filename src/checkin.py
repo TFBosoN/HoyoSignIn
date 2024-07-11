@@ -18,11 +18,11 @@ def run_check_in(game_name, CONFIG):
     OS_COOKIE = ''
     token = ''
 
-    if os.getenv('OS_COOKIE', '') != '':
-        OS_COOKIE = os.getenv('OS_COOKIE')
+    if os.getenv('OS_COOKIE_'+game_name, '') != '':
+        OS_COOKIE = os.getenv('OS_COOKIE_'+game_name)
     else:
-        log.error(f"{game_name} Cookie not set properly.")
-        raise Exception("Cookie failure")
+        log.error(f"{game_name} Cookie not set, skipping.")
+        return
 
     cookie_list = OS_COOKIE.split('@')
     log.info(f'Number of {game_name} account cookies read: {len(cookie_list)}')

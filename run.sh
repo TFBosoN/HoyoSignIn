@@ -10,4 +10,4 @@ echo "Waiting for $delay seconds..." > last_job.log
 sleep "$delay"
 
 # Add your further commands here
-python3 checkin.py >> last_job.log
+python3 ./src/checkin.py >> last_job.log

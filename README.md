@@ -14,8 +14,10 @@ Daily sign in tool for Mihoyo games.
 - [License](#license)
 
 ## About
-This is a remake of original [Genshin Impact Check-In Helper](https://am-steph.github.io/wayscript-login-helper/) modified to complete daily logins for Hoyo games with notification for Telegram.
-Intended for self-hosting.
+This is a remake of [Genshin Impact Check-In Helper](https://am-steph.github.io/wayscript-login-helper/) modified to complete daily logins for Hoyo games with notification for Telegram.
+
+Intended for self-hosting on your PC or Cloud/VPS.
+
 Can be setup for Windows or Linux.
 
 ## Features

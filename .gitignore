@@ -24,7 +24,8 @@ pipenv/
 
 # Local development settings
 *.env
-
+!.env.example
+.cursorignore
 # Miscellaneous
 *.pyc
 *.bak

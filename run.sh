@@ -9,5 +9,7 @@ delay=$((1 + RANDOM % 80))
 echo "Waiting for $delay seconds..." > last_job.log
 sleep "$delay"
 
+cd src
+
 # Add your further commands here
-python3 -m src.checkin >> last_job.log 2>&1
+python3 -m __init__ >> last_job.log 2>&1

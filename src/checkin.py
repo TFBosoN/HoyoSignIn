@@ -188,7 +188,7 @@ class CheckInManager:
                 else:
                     total_fail += 1
                 
-                messages.append(f"\n{game_name}:")
+                messages.append(f"{game_name}:")
                 messages.append(result['message'])
             
             # Status for account
@@ -254,6 +254,4 @@ def run_check_in(game_name: str = None, game_config: GameConfig = None):
                     )
 
 
-if __name__ == '__main__':
-    manager = CheckInManager()
-    manager.run_all()
+

@@ -11,4 +11,6 @@ timeout /t !delay! > nul
 
 REM Add your further commands here
 
-python.exe -m src.checkin >> last_job.log 2>&1
+cd src
+
+python.exe -m __init__ >> last_job.log

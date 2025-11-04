@@ -11,7 +11,7 @@ from .config import GameConfig, GAME_CONFIGS
 logger = logging.getLogger(__name__)
 
 MESSAGE_TEMPLATE = '''
-{nick_name}({uid}) - AR{level}
+{nick_name} ({uid}) - AR{level}
 Reward: {award_name} × {award_cnt}
 {total_sign_day} days - {status}
 '''

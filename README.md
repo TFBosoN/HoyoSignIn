@@ -157,9 +157,10 @@ Set both to `true` if you want all traffic through the proxy. If you just want t
 
 #### Manual execution
 
-Run `run.bat` or execute:
+Run `run.bat` or execute manually:
 ```bash
-python -m src.checkin
+cd src
+python -m __init__
 ```
 
 #### Automatic execution via Task Scheduler
@@ -178,9 +179,10 @@ python -m src.checkin
 
 #### Manual execution
 
-Run `run.sh` or execute:
+Run `run.sh` or execute manually:
 ```bash
-python3 -m src.checkin
+cd src
+python3 -m __init__
 ```
 
 #### Automatic execution via cron

@@ -34,7 +34,7 @@
 - Code structure refactoring: separated into modules (`config.py`, `http_client.py`, `notify.py`, `sign.py`, `checkin.py`)
 - Improved configuration system with support for new format
 - Enhanced error handling and logging
-- Updated execution method: `python -m src.checkin` instead of direct script execution
+- Launcher scripts (`run.bat` / `run.sh`) now add a random startup delay and log all output to `last_job.log`
 
 ### Compatibility
 - ✅ Full backward compatibility with old configurations

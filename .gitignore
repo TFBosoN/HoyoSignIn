@@ -32,3 +32,5 @@ pipenv/
 .DS_Store
 log.txt
 *.log
+error_log.txt
+last_job.log

@@ -107,12 +107,31 @@ If you use Task Scheduler (Windows) or cron (Linux), make sure:
 - Working directory is set: `C:\<Path>\<to>\<project>`
 - In cron, the path to `run.sh` is correct
 
+### 7. Proxy Configuration (v2.1)
+
+The old `USE_PROXY=true` flag still works but the new format gives you per-channel control:
+
+| Old | New | Effect |
+|-----|-----|--------|
+| `USE_PROXY=true` | *(unchanged, still works)* | Enables proxy for **both** game API and Telegram |
+| — | `USE_PROXY_SIGNIN=true` | Proxy only for game sign-in API calls |
+| — | `USE_PROXY_TELEGRAM=true` | Proxy only for Telegram notifications |
+
+Both new flags read `PROXY_DATA` for the socks5 address. Example:
+
+```env
+PROXY_DATA=user:pass@127.0.0.1:1080
+USE_PROXY_SIGNIN=true
+USE_PROXY_TELEGRAM=false
+```
+
 ## Backward Compatibility
 
 Version 2.0 is **fully backward compatible** with the old configuration. You can continue using:
 - Old format `OS_COOKIE_*`
 - Old variables `BOT_API` and `BOT_CHAT`
 - Old cookie structure
+- `USE_PROXY=true` single-flag proxy
 
 Everything will work as before, but you won't get the benefits of new features.
 

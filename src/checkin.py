@@ -6,252 +6,188 @@ from datetime import datetime
 from typing import List, Dict, Any
 try:
     from .config import (
-        get_app_settings,
-        load_accounts,
-        GAME_CONFIGS,
-        AccountConfig,
-        GameConfig
+        get_proxy_config, load_accounts,
+        GAME_CONFIGS, AccountConfig, GameConfig,
+        GAME_ROW_TEMPLATE, ACCOUNT_HEADER_TEMPLATE,
     )
+    from .http_client import HttpClient
     from .notify import TelegramNotifier
-    from .sign import Sign
+    from .sign import Sign, SignResult
 except ImportError:
-    # For running as script
     import sys
     import os
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     from src.config import (
-        get_app_settings,
-        load_accounts,
-        GAME_CONFIGS,
-        AccountConfig,
-        GameConfig
+        get_proxy_config, load_accounts,
+        GAME_CONFIGS, AccountConfig, GameConfig,
+        GAME_ROW_TEMPLATE, ACCOUNT_HEADER_TEMPLATE,
     )
+    from src.http_client import HttpClient
     from src.notify import TelegramNotifier
-    from src.sign import Sign
+    from src.sign import Sign, SignResult
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(name)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    datefmt='%Y-%m-%d %H:%M:%S',
 )
 
 logger = logging.getLogger(__name__)
 
 
+class _SafeDict(dict):
+    """dict subclass that leaves unknown format keys in place instead of raising."""
+    def __missing__(self, key: str) -> str:
+        return '{' + key + '}'
+
+
+def _fmt(template: str, **kwargs) -> str:
+    return template.format_map(_SafeDict(kwargs))
+
+
 class CheckInManager:
-    """Manager for handling check-ins."""
-    
+    """Orchestrates check-ins across all configured accounts and games."""
+
     def __init__(self):
-        """Initialize manager."""
         self.telegram = TelegramNotifier()
         self.accounts = load_accounts()
-        logger.info(f"Loaded accounts: {len(self.accounts)}")
-    
+        self._signin_proxy = get_proxy_config().get_signin_proxy()
+        logger.info(f"Loaded {len(self.accounts)} account(s)")
+
+    # ── Check-in execution ────────────────────────────────────────────────────
+
     def run_check_in_for_game(
         self,
         game_name: str,
         game_config: GameConfig,
-        account: AccountConfig
-    ) -> Dict[str, Any]:
-        """
-        Perform check-in for specific game and account.
-        
-        Args:
-            game_name: Game name
-            game_config: Game configuration
-            account: Account configuration
-            
-        Returns:
-            Dictionary with result: success, message, account_id
-        """
-        account_id = account.account_id
-        logger.info(f'Preparing check-in for {game_name}, account {account_id}...')
-        
+        account: AccountConfig,
+    ) -> SignResult:
+        """Perform check-in for a single game / account pair."""
+        logger.info(f'Starting check-in: {game_name} / account {account.account_id}')
         try:
-            sign_handler = Sign(account.cookies, game_config)
-            msg = sign_handler.run()
-            
-            return {
-                'success': True,
-                'message': msg,
-                'account_id': account_id,
-                'game': game_name
-            }
-            
+            http_client = HttpClient(proxy=self._signin_proxy)
+            return Sign(account.cookies, game_name, game_config, http_client).run()
+
         except IndexError:
-            cookie_values = ["account_id", "cookie_token", "ltoken", "ltuid", "mi18nLang", "_MHYUUID"]
-            missing = [val for val in cookie_values if val not in account.cookies]
-            
+            cookie_fields = ["account_id", "cookie_token", "ltoken", "ltuid"]
+            missing = [f for f in cookie_fields if f not in account.cookies]
             if missing:
-                logger.error(f'Missing fields in cookies: {", ".join(missing)}')
-            
-            error_msg = (
-                f"{game_name} Check-In: Try these troubleshooting steps:\n"
-                f"- Log out and log back in\n"
-                f"- Make sure you are on the Daily Rewards page, not the HoyoLab Forums page\n"
-                f"- Try incognito mode\n"
-                f"- Try clearing browser history/cache\n"
-                f"- Try using another browser\n"
+                logger.error(f'Missing cookie fields: {", ".join(missing)}')
+            return SignResult(
+                game=game_name, success=False,
+                status='Error: invalid cookies (see README troubleshooting)',
             )
-            
-            return {
-                'success': False,
-                'message': error_msg,
-                'account_id': account_id,
-                'game': game_name
-            }
-            
+
         except Exception as e:
-            logger.error(f"{game_name} Check-In for account {account_id}: {e}")
-            return {
-                'success': False,
-                'message': f'{game_name} Check-In for account {account_id}:\n {e}',
-                'account_id': account_id,
-                'game': game_name
-            }
-    
-    def run_check_in_for_account(
-        self,
-        account: AccountConfig
-    ) -> Dict[str, Any]:
-        """
-        Perform check-in for account in all enabled games.
-        
-        Args:
-            account: Account configuration
-            
-        Returns:
-            Dictionary with results for each game
-        """
-        results = {}
-        
+            logger.error(f"{game_name} / account {account.account_id}: {e}")
+            return SignResult(game=game_name, success=False, status=f'Error: {e}')
+
+    def run_check_in_for_account(self, account: AccountConfig) -> List[SignResult]:
+        """Perform check-in for all enabled games on an account."""
+        results = []
         for game_name in account.enabled_games:
             if game_name not in GAME_CONFIGS:
-                logger.warning(f"Game {game_name} not found in configuration. Skipping.")
+                logger.warning(f"Unknown game '{game_name}' — skipping.")
                 continue
-            
-            game_config = GAME_CONFIGS[game_name]
-            result = self.run_check_in_for_game(game_name, game_config, account)
-            results[game_name] = result
-        
+            results.append(self.run_check_in_for_game(game_name, GAME_CONFIGS[game_name], account))
         return results
-    
+
     def run_all(self):
-        """Perform check-in for all accounts."""
+        """Perform check-in for every account, then send consolidated notifications."""
         if not self.accounts:
-            logger.error("No accounts found. Please check configuration.")
+            logger.error("No accounts found. Please check your configuration.")
             return
-        
+
         all_results = []
-        
         for account in self.accounts:
             logger.info(f"Processing account: {account.account_id}")
-            account_results = self.run_check_in_for_account(account)
             all_results.append({
                 'account_id': account.account_id,
                 'telegram_chat_id': account.telegram_chat_id,
-                'results': account_results
+                'results': self.run_check_in_for_account(account),
             })
-        
-        # Send notifications
+
         self._send_notifications(all_results)
-    
+
+    # ── Message formatting ────────────────────────────────────────────────────
+
+    @staticmethod
+    def _format_game_row(result: SignResult) -> str:
+        """Format one game entry using GAME_ROW_TEMPLATE."""
+        return _fmt(
+            GAME_ROW_TEMPLATE,
+            game=result.game,
+            player_name=result.player_name,
+            uid=result.uid,
+            ar=result.ar,
+            level=result.ar,
+            region=result.region,
+            day=result.day,
+            reward_name=result.reward_name,
+            reward_count=result.reward_count,
+            status=result.status,
+            status_icon=result.status_icon,
+        )
+
+    @staticmethod
+    def _format_account_block(account_id: str, results: List[SignResult]) -> str:
+        """
+        Build an expandable <blockquote> for one account.
+
+        Telegram shows the first ~3 lines when collapsed, so the structure is:
+          Line 1 — account header  (e.g. "Account 12345: 3/3 succeeded")
+          Line 2 — icon bar        (e.g. "✅ ✅ ✅")
+          Line 3 — blank spacer
+          ...game rows...
+        """
+        success_count = sum(1 for r in results if r.success)
+        total_count = len(results)
+        status_icons = ' '.join(r.status_icon for r in results)
+        date = datetime.now().strftime('%d.%m.%Y')
+
+        header = _fmt(
+            ACCOUNT_HEADER_TEMPLATE,
+            account_id=account_id,
+            success_count=success_count,
+            total_count=total_count,
+            status_icons=status_icons,
+            date=date,
+        )
+
+        game_rows = '\n\n'.join(CheckInManager._format_game_row(r) for r in results)
+        body = f"{header}\n{status_icons}\n\n{game_rows}"
+        return f"<blockquote expandable>{body}</blockquote>"
+
+    # ── Notification dispatch ─────────────────────────────────────────────────
+
     def _send_notifications(self, all_results: List[Dict[str, Any]]):
-        """
-        Send notifications about check-in results.
-        
-        Args:
-            all_results: List of check-in results
-        """
-        today = datetime.now().strftime('%d.%m.%Y')
-        
-        # Group results by chat_id for sending
+        """Group results by chat_id and send one message per chat."""
         notifications_by_chat: Dict[str, List[str]] = {}
-        
+        total_success = 0
+        total_games = 0
+
         for account_result in all_results:
-            chat_id = account_result.get('telegram_chat_id')
-            account_id = account_result['account_id']
-            results = account_result['results']
-            
-            if not results:
+            sign_results: List[SignResult] = account_result['results']
+            if not sign_results:
                 continue
-            
-            # Build message for account
-            messages = [f"{today}"]
-            total_success = 0
-            total_fail = 0
-            
-            for game_name, result in results.items():
-                if result['success']:
-                    total_success += 1
-                else:
-                    total_fail += 1
-                
-                messages.append(f"{game_name}:")
-                messages.append(result['message'])
-            
-            # Status for account
-            total = total_success + total_fail
-            status = f"Account {account_id}: {total_success}/{total} succeeded"
-            
-            # Combine all messages
-            full_message = '\n'.join(messages)
-            
-            # Group by chat_id
-            if chat_id:
-                if chat_id not in notifications_by_chat:
-                    notifications_by_chat[chat_id] = []
-                notifications_by_chat[chat_id].append(f"{status}\n{full_message}")
-            else:
-                # Use default_chat_id if not specified
-                default_chat = self.telegram.config.default_chat_id
-                if default_chat:
-                    if default_chat not in notifications_by_chat:
-                        notifications_by_chat[default_chat] = []
-                    notifications_by_chat[default_chat].append(f"{status}\n{full_message}")
-        
-        # Send notifications
-        for chat_id, messages in notifications_by_chat.items():
-            combined_message = '\n'.join(messages)
-            total_all_success = sum(1 for ar in all_results for r in ar['results'].values() if r['success'])
-            total_all = sum(len(ar['results']) for ar in all_results)
-            
-            status_msg = f"Total: {total_all_success}/{total_all} succeeded"
+
+            account_id = account_result['account_id']
+            chat_id = account_result.get('telegram_chat_id') or self.telegram.config.default_chat_id
+            if not chat_id:
+                continue
+
+            total_success += sum(1 for r in sign_results if r.success)
+            total_games += len(sign_results)
+
+            block = self._format_account_block(account_id, sign_results)
+            notifications_by_chat.setdefault(chat_id, []).append(block)
+
+        overall_status = f"Total: {total_success}/{total_games} succeeded"
+
+        for chat_id, blocks in notifications_by_chat.items():
             self.telegram.send(
                 chat_id=chat_id,
                 app='HoyoSignIn',
-                status=status_msg,
-                msg=combined_message
+                status=overall_status,
+                msg='\n\n'.join(blocks),
             )
-
-
-def run_check_in(game_name: str = None, game_config: GameConfig = None):
-    """
-    Function for backward compatibility.
-    Performs check-in for specific game.
-    
-    Args:
-        game_name: Game name
-        game_config: Game configuration
-    """
-    if game_name and game_config:
-        # Old format - for backward compatibility
-        manager = CheckInManager()
-        accounts = load_accounts()
-        
-        for account in accounts:
-            if game_name in account.enabled_games:
-                result = manager.run_check_in_for_game(game_name, game_config, account)
-                # Send notification for each account
-                chat_id = account.telegram_chat_id or manager.telegram.config.default_chat_id
-                if chat_id:
-                    manager.telegram.send(
-                        chat_id=chat_id,
-                        app=f'{game_name} Helper',
-                        status=f"{result['account_id']}: {'Success' if result['success'] else 'Error'}",
-                        msg=result['message']
-                    )
-
-
-

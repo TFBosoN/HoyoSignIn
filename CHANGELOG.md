@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.1.0] - 2026-05-31
+
+### Added
+- 🌐 **Per-channel SOCKS5 proxy** — `USE_PROXY_SIGNIN` and `USE_PROXY_TELEGRAM` let you route game sign-in API calls and Telegram notifications through the proxy independently
+
+### Fixed
+- `run.bat` was not capturing Python log output (`2>&1` was missing, so `stderr` was dropped from `last_job.log`)
+- Cookie validator now accepts `ltoken_v2` in addition to `ltoken`
+- Fixed `src/__init__.py` import so the package entry point works correctly
+
+### Changed
+- `HttpClient` now accepts a `proxy=` dict directly instead of reading config internally — cleaner separation of concerns
+- `AppSettings` and `ProxyConfig` are now cached singletons (parsed once at startup instead of on every request)
+- Removed unused `run_check_in()` compatibility stub from `checkin.py`
+
+### Compatibility
+- ✅ `USE_PROXY=true` still works as a shortcut that enables proxy for both channels
+
+---
+
 ## [2.0.0] - 2025
 
 ### Added

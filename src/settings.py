@@ -31,9 +31,9 @@ for game_name, game_config in GAME_CONFIGS.items():
         "OS_HEADERS": game_config.os_headers
     }
 
-# HTTP client for backward compatibility
+# HTTP client for backward compatibility (uses signin proxy)
 proxy_config = get_proxy_config()
-req = HttpClient(use_proxy=proxy_config.use_proxy)
+req = HttpClient(proxy=proxy_config.get_signin_proxy())
 
 # Message template for backward compatibility
 MESSAGE_TEMPLATE = '''

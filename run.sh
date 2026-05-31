@@ -1,15 +1,14 @@
 #!/bin/bash
 
-# Navigate to the directory of the script
-cd "$(dirname "$0")"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Generate a random delay between 1 and 80 seconds (you can adjust the range)
+# Generate a random delay between 1 and 80 seconds
 delay=$((1 + RANDOM % 80))
 
-echo "Waiting for $delay seconds..." > last_job.log
+LOGFILE="$SCRIPT_DIR/last_job.log"
+
+echo "Waiting for $delay seconds..." > "$LOGFILE"
 sleep "$delay"
 
-cd src
-
-# Add your further commands here
-python3 -m __init__ >> last_job.log 2>&1
+cd "$SCRIPT_DIR/src"
+python3 -m __init__ >> "$LOGFILE" 2>&1

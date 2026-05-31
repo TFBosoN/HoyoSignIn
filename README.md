@@ -31,7 +31,7 @@ Supports Windows and Linux.
 - ✅ **Individual Telegram notifications for each account**
 - ✅ **Secure secret storage with validation**
 - ✅ **Modern Telegram notifications with HTML formatting**
-- ✅ Proxy configuration (reduces chance of getting captcha)
+- ✅ **Per-channel SOCKS5 proxy** — independently route sign-in and Telegram traffic
 - ✅ Professional code architecture with type hints
 - ✅ Backward compatibility with old configurations
 
@@ -132,11 +132,24 @@ Detailed guide: https://am-steph.github.io/wayscript-login-helper/
 ```env
 # User Agent (default is used if not specified)
 USER_AGENT=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0
-
-# Proxy (optional)
-USE_PROXY=true
-PROXY_DATA=username:password@127.0.0.1:1080
 ```
+
+#### Proxy (optional)
+
+The proxy must be a SOCKS5 address. You can route sign-in API calls and Telegram notifications independently through the same proxy:
+
+```env
+# SOCKS5 address — shared by both channels
+PROXY_DATA=username:password@127.0.0.1:1080
+
+# Enable proxy for game sign-in API calls
+USE_PROXY_SIGNIN=true
+
+# Enable proxy for Telegram notification calls
+USE_PROXY_TELEGRAM=false
+```
+
+Set both to `true` if you want all traffic through the proxy. If you just want the old single-flag behaviour, `USE_PROXY=true` still works as a shortcut that enables the proxy for both channels.
 
 ## Usage
 
@@ -202,9 +215,10 @@ The `.env` file is already added to `.gitignore` to protect your data.
 - 🔒 **Secure secret storage** with Pydantic validation
 - 👤 **Individual notifications** for each account in Telegram
 - 📱 **Enhanced Telegram notifications** with HTML formatting
+- 🌐 **Per-channel SOCKS5 proxy** — `USE_PROXY_SIGNIN` and `USE_PROXY_TELEGRAM` let you route game API calls and Telegram traffic independently
 - 🏗️ **Professional architecture** with type hints and modular structure
 - 📦 **Updated dependencies** to latest versions
-- ♻️ **Backward compatibility** with old configurations
+- ♻️ **Backward compatibility** with old configurations (`USE_PROXY` still works)
 
 ## Contributing
 

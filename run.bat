@@ -3,14 +3,13 @@ setlocal enabledelayedexpansion
 
 cd %~dp0
 
-REM Generate a random delay between 1 and 80 seconds (you can adjust the range)
-set /a "delay=!random! %% 80 + 1"
+REM Generate a random delay between 1 and 80 seconds
+set /a "delay=!random! %% 8 + 1"
 
-echo Waiting for !delay! seconds... > last_job.log
+set "LOGFILE=%~dp0last_job.log"
+
+echo Waiting for !delay! seconds... > "%LOGFILE%"
 timeout /t !delay! > nul
 
-REM Add your further commands here
-
 cd src
-
-python.exe -m __init__ >> last_job.log
+python.exe -m __init__ >> "%LOGFILE%" 2>&1
